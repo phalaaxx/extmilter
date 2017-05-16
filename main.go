@@ -70,7 +70,9 @@ func (e *ExtMilter) Body(m *milter.Modifier) (milter.Response, error) {
 			// return custom response message
 			return milter.NewResponseStr('y', err.Error()), nil
 		}
-		return nil, err
+		// log message and accept
+		fmt.Printf("ParseEmailMessage(): %v\n", err)
+		return milter.RespAccept, nil
 	}
 	// accept message by default
 	return milter.RespAccept, nil
