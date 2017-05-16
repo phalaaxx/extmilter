@@ -6,7 +6,7 @@ After=network.target auditd.service
 User=postfix
 Group=postfix
 WorkingDirectory=/var/lib/postfix
-ExecStart=/usr/local/bin/extmilter \
+ExecStart=/usr/bin/extmilter \
 	--proto unix \
 	--addr /var/spool/postfix/milters/ext.sock
 KillMode=process
