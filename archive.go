@@ -10,29 +10,28 @@ import (
 	"strings"
 )
 
-/* SupportedArchive returns true if file name
-   represents a supported archive file type */
-func SupportedArchive(name string) bool {
-	ExtList := []string{"tar", "zip", "rar"}
-	nameLower := strings.ToLower(name)
-	for _, ext := range ExtList {
-		if strings.HasSuffix(nameLower, ext) {
-			return true
-		}
-	}
-	return false
-}
-
 /* AllowPayload runs the appropriate decompress
    function according to provided extension */
-func AllowPayload(ext string, r *strings.Reader) error {
-	switch ext {
-	case ".tar":
-		return AllowTarPayload(r)
-	case ".zip":
-		return AllowZipPayload(r)
-	case ".rar":
-		return AllowRarPayload(r)
+func AllowPayload(r *strings.Reader) (err error) {
+	// define list of payload functions to try
+	PayloadFuncList := []func(*strings.Reader)error{
+		AllowTarPayload,
+		AllowZipPayload,
+		AllowRarPayload,
+	}
+	for _, Payload := range PayloadFuncList {
+		// seek at the beginning of the stream and try next payload
+		if _, err = r.Seek(0, 0); err != nil {
+			return err
+		}
+		// check if payload was recognised and found to be clean
+		if err = Payload(r); err == nil {
+			break
+		}
+		// check if payload was recognised and blocked
+		if err == EPayloadNotAllowed {
+			return err
+		}
 	}
 	return nil
 }
@@ -56,17 +55,15 @@ func AllowTarPayload(r *strings.Reader) error {
 			return EPayloadNotAllowed
 		}
 		// check for nested archives
-		if SupportedArchive(header.Name) {
-			slurp, err := ioutil.ReadAll(reader)
-			if err != nil {
-				// silently ignore errors
-				continue
-			}
-			// check if sub-payload contains any blacklisted files
-			if err := AllowPayload(FileExt, strings.NewReader(string(slurp))); err != nil {
-				// error, return immediately
-				return err
-			}
+		slurp, err := ioutil.ReadAll(reader)
+		if err != nil {
+			// silently ignore errors
+			continue
+		}
+		// check if sub-payload contains any blacklisted files
+		if err := AllowPayload(strings.NewReader(string(slurp))); err != nil {
+			// error, return immediately
+			return err
 		}
 	}
 	return nil
@@ -86,19 +83,17 @@ func AllowZipPayload(r *strings.Reader) error {
 			return EPayloadNotAllowed
 		}
 		// check archive within another achive
-		if SupportedArchive(f.Name) {
-			payload, err := f.Open()
-			if err != nil {
-				// silently ignore errors
-				continue
-			}
-			// read sub-payload
-			slurp, err := ioutil.ReadAll(payload)
-			// check if sub-payload contains any blacklisted files
-			if err := AllowPayload(FileExt, strings.NewReader(string(slurp))); err != nil {
-				// error, return immediately
-				return err
-			}
+		payload, err := f.Open()
+		if err != nil {
+			// silently ignore errors
+			continue
+		}
+		// read sub-payload
+		slurp, err := ioutil.ReadAll(payload)
+		// check if sub-payload contains any blacklisted files
+		if err := AllowPayload(strings.NewReader(string(slurp))); err != nil {
+			// error, return immediately
+			return err
 		}
 	}
 
@@ -127,17 +122,15 @@ func AllowRarPayload(r *strings.Reader) error {
 			return EPayloadNotAllowed
 		}
 		// check archive within another achive
-		if SupportedArchive(header.Name) {
-			slurp, err := ioutil.ReadAll(rr)
-			if err != nil {
-				// silently ignore errors
-				continue
-			}
-			// check if sub-payload contains any blacklisted files
-			if err := AllowPayload(FileExt, strings.NewReader(string(slurp))); err != nil {
-				// error, return immediately
-				return err
-			}
+		slurp, err := ioutil.ReadAll(rr)
+		if err != nil {
+			// silently ignore errors
+			continue
+		}
+		// check if sub-payload contains any blacklisted files
+		if err := AllowPayload(strings.NewReader(string(slurp))); err != nil {
+			// error, return immediately
+			return err
 		}
 	}
 	// no blacklisted file, allow

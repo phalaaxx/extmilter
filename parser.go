@@ -84,23 +84,20 @@ func ParseEmailMessage(r io.Reader) error {
 			// return custom response message
 			return EPayloadNotAllowed
 		}
-		// check archived payload contents
-		if SupportedArchive(FileName) {
-			// read zip file contents
-			slurp, err := ioutil.ReadAll(part)
-			if err != nil {
-				return err
-			}
-			// decode base64 contents
-			decoded, err := base64.StdEncoding.DecodeString(string(slurp))
-			if err != nil {
-				return err
-			}
-			reader := strings.NewReader(string(decoded))
-			// examine payload for blacklisted contents
-			if err := AllowPayload(FileExt, reader); err != nil {
-				return err
-			}
+		// read file contents
+		slurp, err := ioutil.ReadAll(part)
+		if err != nil {
+			return err
+		}
+		// decode base64 contents
+		decoded, err := base64.StdEncoding.DecodeString(string(slurp))
+		if err != nil {
+			return err
+		}
+		reader := strings.NewReader(string(decoded))
+		// examine payload for blacklisted contents
+		if err := AllowPayload(reader); err != nil {
+			return err
 		}
 	}
 	// accept message by default
