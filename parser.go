@@ -15,9 +15,10 @@ import (
 /* ExtensionBlacklist is a list of file extensions that
    are forbidden (blacklisted) in email message payloads */
 var ExtensionBlacklist = []string{
-	".asd", ".bat", ".chm", ".cmd", ".com", ".dll", ".do", ".exe", ".hlp",
-	".hta", ".js", ".jse", ".lnk", ".ocx", ".pif", ".reg", ".scr", ".shb",
-	".shm", ".shs", ".vbe", ".vbs", ".vbx", ".vxd", ".wsf", ".wsh", ".xl",
+	".asd", ".bat", ".chm", ".cmd", ".com", ".dll", ".do",
+	".exe", ".hlp", ".hta", ".js", ".jse", ".lnk", ".ocx",
+	".pif", ".reg", ".scr", ".shb", ".shm", ".shs", ".vbe",
+	".vbs", ".vbx", ".vxd", ".wsf", ".wsh", ".xl", ".jar",
 }
 
 // EPayloadNotAllowed is an error that disallows message to pass
