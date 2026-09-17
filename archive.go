@@ -5,7 +5,6 @@ import (
 	"archive/zip"
 	"github.com/nwaples/rardecode"
 	"io"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
 )
@@ -55,7 +54,7 @@ func AllowTarPayload(r *strings.Reader) error {
 			return EPayloadNotAllowed
 		}
 		// check for nested archives
-		slurp, err := ioutil.ReadAll(reader)
+		slurp, err := io.ReadAll(reader)
 		if err != nil {
 			// silently ignore errors
 			continue
@@ -89,7 +88,7 @@ func AllowZipPayload(r *strings.Reader) error {
 			continue
 		}
 		// read sub-payload
-		slurp, err := ioutil.ReadAll(payload)
+		slurp, err := io.ReadAll(payload)
 		// check if sub-payload contains any blacklisted files
 		if err := AllowPayload(strings.NewReader(string(slurp))); err != nil {
 			// error, return immediately
@@ -122,7 +121,7 @@ func AllowRarPayload(r *strings.Reader) error {
 			return EPayloadNotAllowed
 		}
 		// check archive within another achive
-		slurp, err := ioutil.ReadAll(rr)
+		slurp, err := io.ReadAll(rr)
 		if err != nil {
 			// silently ignore errors
 			continue

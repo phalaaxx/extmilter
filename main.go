@@ -81,7 +81,7 @@ func (e *ExtMilter) Body(m *milter.Modifier) (milter.Response, error) {
 /* NewObject creates new BogoMilter instance */
 func RunServer(socket net.Listener) {
 	// declare milter init function
-	init := func() (milter.Milter, uint32, uint32) {
+	init := func() (milter.Milter, milter.OptAction, milter.OptProtocol) {
 		return &ExtMilter{},
 			milter.OptAddHeader | milter.OptChangeHeader,
 			milter.OptNoConnect | milter.OptNoHelo | milter.OptNoMailFrom | milter.OptNoRcptTo

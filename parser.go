@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"io"
-	"io/ioutil"
 	"mime"
 	"mime/multipart"
 	"net/mail"
@@ -86,7 +85,7 @@ func ParseEmailMessage(r io.Reader) error {
 			return EPayloadNotAllowed
 		}
 		// read file contents
-		slurp, err := ioutil.ReadAll(part)
+		slurp, err := io.ReadAll(part)
 		if err != nil {
 			return err
 		}

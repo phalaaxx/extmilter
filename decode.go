@@ -6,7 +6,6 @@ import (
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/charmap"
 	"io"
-	"io/ioutil"
 	"mime"
 	"strings"
 )
@@ -27,7 +26,7 @@ func NewDecoder() *mime.WordDecoder {
 			return nil, fmt.Errorf("unhandled charset %q", charset)
 		}
 		// read input data
-		content, err := ioutil.ReadAll(input)
+		content, err := io.ReadAll(input)
 		if err != nil {
 			return nil, err
 		}

@@ -1,0 +1,6 @@
+github.com/nwaples/rardecode v1.1.3 h1:cWCaZwfM5H7nAD6PyEdcVnczzV8i/JtotnyW/dD9lEc=
+github.com/nwaples/rardecode v1.1.3/go.mod h1:5DzqNKiOdpKKBH87u8VlvAnPZMXcGRhxWkRpHbbfGS0=
+github.com/phalaaxx/milter v0.0.0-20240815211724-8304fd4788c2 h1:fqrQwRxqHoIAeQsT2cbZ4qrFoGDx+dPeecwyL4U8yGM=
+github.com/phalaaxx/milter v0.0.0-20240815211724-8304fd4788c2/go.mod h1:pWcwmbMsL2gCwQLuBpNKKheVg0NqpXCbE3gD+20hFPU=
+golang.org/x/text v0.20.0 h1:gK/Kv2otX8gz+wn7Rmb3vT96ZwuoxnQlY+HlJVj7Qug=
+golang.org/x/text v0.20.0/go.mod h1:D4IsuqiFMhST5bX19pQ9ikHC2GsaKyk/oF+pn3ducp4=
